@@ -35,13 +35,21 @@ if build_own_model:
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size
         )
+
     if classifier == "Logistic Regression":
-        model, train_button = logistic_regression_model()
-        
+        log_reg_model, train_button = logistic_regression_model()
         if train_button:
-            model = UserModel(model, X_train, X_test, y_train, y_test)
-            model.fit_user_model()
-            model.metrics()
+            st.write(f"{classifier} model choosed.")
+            log_reg_model = UserModel(log_reg_model, X_train, 
+                X_test, y_train, y_test)
+            log_reg_model()
+
+    elif classifier == "Support Vector Machine (SVM)":
+        svm_model, train_button = support_vector_machine()
+        if train_button:
+            st.write(f"{classifier} model choosed.")
+            svm_model = UserModel(svm_model, X_train, X_test, y_train, y_test)
+            svm_model()
 else:
     classifier = st.sidebar.selectbox("Classifier", (
     "Logistic Regression", "Support Vector Machine (SVM)",
