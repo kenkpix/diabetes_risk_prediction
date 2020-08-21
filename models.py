@@ -155,9 +155,6 @@ def random_forest_classifier():
     if oob_score:
         bootstrap = True
 
-    st.write("bootstrap params = ", bootstrap)
-    st.write("Max depth param = ", max_depth)
-    st.write("Max leaf nodes = ", max_leaf_nodes)
     train_button = st.button("Train Random Forest model", key='train_user_model')
     model = RandomForestClassifier(n_estimators=n_estimators, criterion=criterion,
                                    max_depth=max_depth, min_samples_split=min_samples_split,
