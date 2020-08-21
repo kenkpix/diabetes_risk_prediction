@@ -10,6 +10,7 @@ POSITIVE_RESULT = "Maybe you have health problems😞. \
                 I recommend that you undergo a medical examination"
 NEGATIVE_RESULT = "You are not at risk of developing diabetes. Be healthy.😊"
 
+
 # Load data for custom user models
 @st.cache(persist=True)
 def load_data():
@@ -26,11 +27,13 @@ def load_data():
     y = df['class']
     return X, y
 
+
 def encode_result(num):
     if num == 1:
         return "Positive. " + POSITIVE_RESULT
     else:
         return "Negative. " + NEGATIVE_RESULT
+
 
 def encode_features(df):
     """
@@ -47,6 +50,7 @@ def encode_features(df):
         df[col] = label.fit_transform(df[col])
     return df
 
+
 def make_predictions(model_name, data):
     """
     Load model and make predictions on user data
@@ -59,21 +63,31 @@ def make_predictions(model_name, data):
         (int, array): class(es) that model predicts based on data
     """
     model_name += '.pickle'
-    model = pickle.load(open(MODEL_PATH+model_name, 'rb'))
+    model = pickle.load(open(MODEL_PATH + model_name, 'rb'))
     return model.predict(data)
 
+
 @st.cache(persist=True)
-def split_data(X, y, test_size):
+def split_data(x, y, test_size):
     """
     Split data into training and validation
 
     Parameters:
-        X (pd.DataFrame): features
+        x (pd.DataFrame): features
         y (pd.Series, array): targets
+        test_size (float) : size of validation data set
 
     Returns:
         list of train-test split inputs
     """
-    return train_test_split(X, y, test_size=test_size)
+    return train_test_split(x, y, test_size=test_size)
 
-    
+
+def check_parameters(parameter_name, parameter, expected_type):
+    try:
+        expected_type(parameter)
+    except ValueError:
+        st.error("{} must be {}".format(parameter_name, expected_type.__name__))
+        return 0
+    else:
+        return 1

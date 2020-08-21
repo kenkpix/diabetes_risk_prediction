@@ -3,8 +3,8 @@ import pandas as pd
 import pickle
 
 from sklearn.model_selection import train_test_split
-from methods import (encode_result, encode_features, 
-                    make_predictions, load_data)
+from methods import (encode_result, encode_features,
+                     make_predictions, load_data)
 from models import *
 
 st.title("Early stage diabetes risk prediction")
@@ -28,61 +28,71 @@ if build_own_model:
     st.write("Choose model that will be trained. All parameters \
         set on default. Also, choose a size of validation data.")
     classifier = st.sidebar.selectbox("Classifier", (
-        "Logistic Regression", "Support Vector Machine (SVM)"
+        "Logistic Regression", "Support Vector Machine (SVM)",
+        "Random Forest Classifier"
     ))
-    test_size = st.slider("Validation data size", min_value=0.01, 
-        max_value=0.99, value=0.2, step=0.01)
+    test_size = st.slider("Validation data size", min_value=0.01,
+                          max_value=0.99, value=0.2, step=0.01)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size
-        )
+    )
 
     if classifier == "Logistic Regression":
         log_reg_model, train_button = logistic_regression_model()
         if train_button:
-            st.write(f"{classifier} model choosed.")
-            log_reg_model = UserModel(log_reg_model, X_train, 
-                X_test, y_train, y_test)
+            st.write(f"{classifier} model chosen.")
+            log_reg_model = UserModel(log_reg_model, X_train,
+                                      X_test, y_train, y_test)
             log_reg_model()
 
     elif classifier == "Support Vector Machine (SVM)":
         svm_model, train_button = support_vector_machine()
         if train_button:
-            st.write(f"{classifier} model choosed.")
+            st.write(f"{classifier} model chosen.")
             svm_model = UserModel(svm_model, X_train, X_test, y_train, y_test)
             svm_model()
+
+    elif classifier == "Random Forest Classifier":
+        rfc, train_button = random_forest_classifier()
+        if train_button:
+            rfc_model = UserModel(rfc, X_train, X_test, y_train, y_test)
+            rfc_model()
+
 else:
     classifier = st.sidebar.selectbox("Classifier", (
-    "Logistic Regression", "Support Vector Machine (SVM)",
-    "Random Forest Classifier", "Gradient Boosting Classifier"
-))
+        "Logistic Regression", "Support Vector Machine (SVM)",
+        "Random Forest Classifier", "Gradient Boosting Classifier"
+    ))
+
 
 # Functions
 
 # Using replace method instead of LabelEncoder 
 # LabelEncoder can't encode features correctly
-def make_df_for_prediction(values, cols):
+def make_df_for_prediction(vals, cols):
     """
     Load user data into dataframe
 
     Parameters:
-        values (list) - list of user inputs
+        vals (list) - list of user inputs
         cols (list) - list of columns
     
     Returns:
         pd.DataFrame with user inputs
     """
-    df = pd.DataFrame([values], columns=cols)
+    df = pd.DataFrame([vals], columns=cols)
     df = df.replace(["Male", "Female", "Yes", "No"], [1, 0, 1, 0])
     return df
+
 
 # If user want to use pre trained model
 if not build_own_model:
     st.markdown("Answer the questions below to get your result")
-# FEATURES
+    # FEATURES
     age = st.number_input("What is your age?", min_value=1, max_value=100, step=1)
 
-    gender = st.selectbox("What is your gender?", ("Male", "Female"), 
-        key='gender')
+    gender = st.selectbox("What is your gender?", ("Male", "Female"),
+                          key='gender')
 
     polyuria = st.selectbox("Do you have a polyuria condition?", (
         "Yes", "No"
@@ -129,8 +139,8 @@ if not build_own_model:
     ), key='irritating')
 
     delayed_healing = st.selectbox("Have you noticed that you take a \
-        long time to heal during your illness?", 
-        ("Yes", "No"), key='delayed_healing')
+        long time to heal during your illness?",
+                                   ("Yes", "No"), key='delayed_healing')
 
     paresis = st.selectbox("Do you feel muscle weakness?", (
         "Yes", "No"
@@ -150,20 +160,19 @@ if not build_own_model:
     overweight = st.selectbox("Are you overweight?", (
         "Yes", "No"
     ), key='overweight')
-# FEATURES END
+    # FEATURES END
 
-    values = [age, gender, polyuria, polydipsia, 
-         weight_loss, weakness, polyphagia, thrush, 
-         vision, itching, irritating, delayed_healing, 
-         paresis, stiffness, balding, overweight]
+    values = [age, gender, polyuria, polydipsia,
+              weight_loss, weakness, polyphagia, thrush,
+              vision, itching, irritating, delayed_healing,
+              paresis, stiffness, balding, overweight]
 
     df_for_prediction = make_df_for_prediction(values, X.columns)
 
-# Generate predictions or training user models
+    # Generate predictions or training user models
     if st.button("Get Result"):
         st.write("Using pre trained model {}.".format(classifier))
         pred = make_predictions(classifier, df_for_prediction)
         st.write("Your result is {}".format(
             encode_result(pred)
         ))
-        
