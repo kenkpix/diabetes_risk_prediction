@@ -39,7 +39,7 @@ def encode_features(df):
     """
     Encode categorical features in dataframe
 
-    Parameters:
+    Args:
         df (pd.DataFrame): Pandas DataFrame with categorical features
     
     Returns:
@@ -55,7 +55,7 @@ def make_predictions(model_name, data):
     """
     Load model and make predictions on user data
 
-    Parameters:
+    Args:
         model_name (str): model filename without extension
         data (pd.DataFrame, array): data for prediction
     
@@ -72,7 +72,7 @@ def split_data(x, y, test_size):
     """
     Split data into training and validation
 
-    Parameters:
+    Args:
         x (pd.DataFrame): features
         y (pd.Series, array): targets
         test_size (float) : size of validation data set
@@ -84,6 +84,18 @@ def split_data(x, y, test_size):
 
 
 def check_parameters(parameter_name, parameter, expected_type):
+    """
+    Check type of parameter
+
+    Args:
+        parameter_name (str): parameter name
+        parameter (int, str, float): value that will be checked
+        expected_type (type: int, float, str): expected type for parameter
+
+    Returns: 0 if parameter has not expected type (raise streamlit.error)
+             1 if parameter has expected type
+
+    """
     try:
         expected_type(parameter)
     except ValueError:

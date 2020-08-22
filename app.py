@@ -1,10 +1,7 @@
 import streamlit as st
 import pandas as pd
-import pickle
-
 from sklearn.model_selection import train_test_split
-from methods import (encode_result, encode_features,
-                     make_predictions, load_data)
+from methods import encode_result, make_predictions, load_data
 from models import *
 
 st.title("Early stage diabetes risk prediction")
