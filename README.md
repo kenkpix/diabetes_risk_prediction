@@ -4,6 +4,8 @@
 
 This app created to get a machine learning playground, work with models in scikit-learn, tuning parameters and watch how them affect on accuracy and other metrics.
 
+Also, you can pick pre trained models, answer the questions and you will be get your result.
+
 ## Preview
 
 Main page
